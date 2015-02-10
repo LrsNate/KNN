@@ -125,17 +125,19 @@ class KNN:
         return _acc, _nbcorrect, _nbtotal
         
 
-def read_examples(infile):
+def read_examples(infile, has_tf_idf):
     """ Lit un fichier d'exemples 
     et retourne une list d'instances de Example
     """
 
-    idfstream = open(re.sub(r'examples$', 'idf', infile))
     idf = {}
-    for line in idfstream:
-        line = line.rstrip('\n')
-        (featname, val) = line.split('\t')
-        idf[featname] = float(val)
+    if has_tf_idf:
+        idfstream = open(re.sub(r'examples$', 'idf', infile))
+        for line in idfstream:
+            line = line.rstrip('\n')
+            (featname, val) = line.split('\t')
+            idf[featname] = float(val)
+        idfstream.close()
 
     stream = open(infile)
     _examples = []
@@ -158,6 +160,8 @@ def read_examples(infile):
             if featname in idf:
                 val = float(val) * idf[featname]
                 example.add_feat(featname, val)
+            elif not idf:
+                example.add_feat(featname, float(val))
     
     if example is not None:
         example.vector.set_norm_square()
@@ -180,11 +184,14 @@ parser.add_option("--weight-neighbors", action="store_true", dest="weight_neighb
                        "du vote (ponderation par la distance inverse). Default=False")
 parser.add_option("--k", dest="k", default=1,
                   help='Hyperparametre K : le nombre de voisins a considerer pour la classification. Default=1')
+parser.add_option("--tf-idf", action="store_true", dest="tf_idf", default=False,
+                  help="Utiliser la ponderation par TF.IDF pour les exemples. Necessite un fichier.idf")
 (opts, args) = parser.parse_args()
 
 k = int(opts.k)
 trace = bool(opts.trace)
 weight_neighbors = bool(opts.weight_neighbors)
+tf_idf = bool(opts.tf_idf)
 
 if len(args) < 1:
     exit(usage)
@@ -196,12 +203,12 @@ if len(args) > 1:
 
 #------------------------------------------------------------
 # Chargement des exemples du classifieur KNN
-examples = read_examples(examples_file)
+examples = read_examples(examples_file, tf_idf)
 
 #------------------------------------------------------------
 # Cas où un fichier de test est fourni
 if test_file:
-    test_examples = read_examples(test_file)
+    test_examples = read_examples(test_file, tf_idf)
 
     # le classifieur
     myclassifier = KNN(_examples=examples,
