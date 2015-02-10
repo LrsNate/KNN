@@ -129,6 +129,14 @@ def read_examples(infile):
     """ Lit un fichier d'exemples 
     et retourne une list d'instances de Example
     """
+
+    idfstream = open(re.sub(r'examples$', 'idf', infile))
+    idf = {}
+    for line in idfstream:
+        line = line.rstrip('\n')
+        (featname, val) = line.split('\t')
+        idf[featname] = float(val)
+
     stream = open(infile)
     _examples = []
     example = None
@@ -147,7 +155,9 @@ def read_examples(infile):
             example = Example(example_number, gold_class)
         elif line and example is not None:
             (featname, val) = line.split('\t')
-            example.add_feat(featname, float(val))
+            if featname in idf:
+                val = float(val) * idf[featname]
+                example.add_feat(featname, val)
     
     if example is not None:
         example.vector.set_norm_square()
