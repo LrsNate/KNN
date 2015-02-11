@@ -133,7 +133,7 @@ def read_examples(infile, has_tf_idf):
 
     idf = {}
     if has_tf_idf:
-        idfstream = open(re.sub(r'examples$', 'idf', infile))
+        idfstream = open("reuters.train.idf")
         for line in idfstream:
             line = line.rstrip('\n')
             (featname, val) = line.split('\t')
