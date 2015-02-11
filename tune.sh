@@ -2,7 +2,7 @@
 
 if [ $# -eq 0 ] || [ $1 = "-h" ]
 then
-    echo "Usage:" $0 "train_set test_set MIN_K INCR_K MAX_K [-w]"
+    echo "Usage:" $0 "train_set test_set [MIN_K [INCR_K [MAX_K [-w]]]]"
     exit
 fi
 
