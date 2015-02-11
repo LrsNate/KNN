@@ -14,12 +14,15 @@ parser.add_argument("--max", dest="max", type=int, help="The maximum K to be tes
 parser.add_argument("--incr", dest="incr", type=int, help="The increment of K when testing")
 parser.add_argument("-w", dest="weighted", action="store_true",
                     help="Whether to test the weighted version of the K-NN algorithm")
+parser.add_argument("-t", dest="tf_idf", action="store_true",
+                    help="Whether to use TF.IDF ponderation for the term frequencies")
 
 argv = parser.parse_args()
 
 train_set = argv.train_set
 test_set = argv.test_set
 weighted = argv.weighted
+tf_idf = argv.tf_idf
 
 min_k = 1
 max_k = 15
@@ -42,15 +45,18 @@ def execute(k):
     args.extend(["--k", str(k)])
     if weighted:
         args.extend("--weight-neighbors")
+    if tf_idf:
+        args.extend("--tf-idf")
     return check_output(args)
 
 res_list = []
 
-print "Testing from %d to %d, with an increment of %d. (%s)" % (
+print "Testing from %d to %d, with an increment of %d. (%s, %s)" % (
     min_k,
     max_k,
     incr_k,
-    "weighted" if weighted else "non-weighted"
+    "weighted" if weighted else "non-weighted",
+    "with TF.IDF ponderation" if tf_idf else "without TF.IDF ponderation"
 )
 
 i = min_k

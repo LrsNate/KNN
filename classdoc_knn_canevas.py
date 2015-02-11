@@ -103,10 +103,12 @@ class KNN:
         i = 0
         max_index = min(self.k, len(sorted_examples))
         while i < max_index:
+            distance = sorted_examples[i][1] if weight_neighbors else 1
+            inv_distance = 1 / distance if distance != 0 else 0
             if sorted_examples[i][0].gold_class in classes:
-                classes[sorted_examples[i][0].gold_class] += 1. / sorted_examples[i][1] if weight_neighbors else 1
+                classes[sorted_examples[i][0].gold_class] += inv_distance
             else:
-                classes[sorted_examples[i][0].gold_class] = 1. / sorted_examples[i][1] if weight_neighbors else 1
+                classes[sorted_examples[i][0].gold_class] = inv_distance
             i += 1
         return max(classes, key=classes.get)
 
