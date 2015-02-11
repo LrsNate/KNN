@@ -10,8 +10,9 @@ from tokenise import tokenise
 from math import log
 
 
-def info(str):
-    print("[INFO] ", str, file=stderr)
+def info(s):
+    print("[INFO] ", s, file=stderr)
+
 
 class CorpusParser(object, HTMLParser):
     def __init__(self):
@@ -43,8 +44,8 @@ class CorpusParser(object, HTMLParser):
         self.current_body = self.current_body.union(set(tokenise(data.rstrip('\n'))))
 
     def get_final_data(self):
-        for k in self.words:
-            self.words[k] = log(self.documents_count / self.words[k])
+        for key in self.words:
+            self.words[k] = log(self.documents_count / self.words[key])
         return self.words
 
 ap = ArgumentParser(usage="Generate a file containing word IDFs from SGML files")

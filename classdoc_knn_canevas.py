@@ -4,6 +4,7 @@
 import sys
 import re
 from optparse import OptionParser
+from math import sqrt
 
 
 class Example:
@@ -55,7 +56,7 @@ class Ovector:
         for key in self.f:
             if key in other_vector.f:
                 rest += self.f[key] * other_vector.f[key]
-        return res - 2 * rest
+        return sqrt(res - 2 * rest)
 
 
 class KNN:

@@ -17,7 +17,7 @@ def tokenise(string):
     pretoks = re.split('[ :;\(\)\[\]\!\?\"\/\^\t]+', string)
     tokens = []
     for tok in pretoks:
-        if tok <> '':
+        if tok != '':
             m = numre.search(tok)
             # si le token matche la regexp des nombres
             if m:
